@@ -1,5 +1,6 @@
 <template>
   <div ref="mapContainer" class="map-container">
+    <p class="distance">Total walk length: {{ walkLength.toFixed(2) }} km</p>
     <template v-if="map">
       <PoiMarker
         v-for="(poi, index) in poiFeatures"
@@ -13,6 +14,7 @@
 </template>
 
 <script setup>
+import { length as turfLength } from "@turf/turf";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { ref, onMounted, onUnmounted, watch, computed } from "vue";
@@ -130,9 +132,33 @@ const poiFeatures = computed(() => {
     (feature) => feature.geometry && feature.geometry.type === "Point"
   );
 });
+
+const walkLength = computed(() => {
+  if (!props.walkPath.length) return 0;
+
+  const geojson = {
+    type: "Feature",
+    geometry: {
+      type: "LineString",
+      coordinates: props.walkPath,
+    },
+  };
+
+  return turfLength(geojson, { units: "kilometers" });
+});
 </script>
 
 <style scoped>
+.distance {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(48, 36, 219, 0.63);
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  z-index: 1;
+}
 .map-container {
   width: 100%;
   height: 100%;
