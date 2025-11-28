@@ -28,7 +28,6 @@
       "properties": {
         "name": "Control Tower",
         "description": "The renovated control tower at RAF Greenham Common, now a cafe and museum."
-      
       },
       "geometry": {
         "coordinates": [-1.2842226298074877, 51.382153369131146],
@@ -39,10 +38,24 @@
       "type": "Feature",
       "properties": {
         "name": "Missile Silo Earthworks",
-        "description": "Earthworks silos for sotring missiles on RAF Greenham Common."
+        "description": "The missile silos at RAF Greenham Common were once part of a Cold War nuclear weapons site, housing American cruise missiles in the 1980s. Interestingly, parts of Greenham Common were also used as filming locations for Star Wars: The Force Awakens."
       },
       "geometry": {
         "coordinates": [-1.3013068212372332, 51.37885382459095],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Suriving Runway Section",
+        "description": "A surviving section of the original runway at RAF Greenham Common, a reminder of its history as a Cold War airbase."
+      },
+      "geometry": {
+        "coordinates": [
+          -1.2808959647185247,
+          51.37917189971725
+        ],
         "type": "Point"
       }
     }
