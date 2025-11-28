@@ -1,0 +1,16 @@
+/* Global Styles (usually in main.css or index.css) */
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0; /* Remove default browser margin */
+  padding: 0; /* Remove default browser padding */
+}
+
+/* The element wrapping your entire app (if not #app) */
+/* The element in your App.vue file is likely the root container for your components */
+.vue-app-wrapper { 
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Use 100vh here to ensure it uses the full viewport */
+}

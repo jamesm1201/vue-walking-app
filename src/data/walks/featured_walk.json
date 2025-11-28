@@ -1,0 +1,50 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "coordinates": [
+          [-1.2845022036567855, 51.38244682937449],
+          [-1.2848321377493903, 51.38136676952047],
+          [-1.2822799198585528, 51.38111702468967],
+          [-1.2806354939129392, 51.380442607010366],
+          [-1.2808467100433916, 51.379239304196034],
+          [-1.2814758426115418, 51.37757708504191],
+          [-1.3024074961608676, 51.37980163814649],
+          [-1.3028999935291665, 51.381344677739776],
+          [-1.301748793246304, 51.382632383139054],
+          [-1.299639983291371, 51.38295430376539],
+          [-1.2939193793786217, 51.3824848313393],
+          [-1.2848242717721234, 51.38138649811523],
+          [-1.2844784600645767, 51.382422191928526]
+        ],
+        "type": "LineString"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Control Tower",
+        "description": "The renovated control tower at RAF Greenham Common, now a cafe and museum."
+      
+      },
+      "geometry": {
+        "coordinates": [-1.2842226298074877, 51.382153369131146],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Missile Silo Earthworks",
+        "description": "Earthworks silos for sotring missiles on RAF Greenham Common."
+      },
+      "geometry": {
+        "coordinates": [-1.3013068212372332, 51.37885382459095],
+        "type": "Point"
+      }
+    }
+  ]
+}
