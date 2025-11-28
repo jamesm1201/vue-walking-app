@@ -17,6 +17,7 @@ import Header from "@/components/Header.vue";
   height: 100vh; /* Use 100vh to ensure it fills the viewport height */
   display: flex;
   flex-direction: column;
+  width: 100vh;
 }
 
 main {

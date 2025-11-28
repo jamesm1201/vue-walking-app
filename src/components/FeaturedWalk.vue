@@ -6,7 +6,7 @@
         :key="index"
         :map="map"
         :coordinates="poi.geometry.coordinates"
-        :poiData="poi.properties"
+        :poiData="{ ...poi.properties }"
       />
     </template>
   </div>
@@ -124,12 +124,6 @@ const poiFeatures = computed(() => {
       (feature) => feature.geometry && feature.geometry.type === "Point"
     )
   );
-  // console.log(
-  //   "walkData features:",
-  //   walkData.features.filter(
-  //     (feature) => feature.geometry && feature.geometry.type === "Point"
-  //   )
-  // );
 
   // Filter for features that are of type 'Point'
   return props.walkData.features.filter(

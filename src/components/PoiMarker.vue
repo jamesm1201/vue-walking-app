@@ -1,12 +1,10 @@
 <template>
-  <!-- <div class="poi-container">
-    <h2>Point of Interest</h2>
-  </div> -->
 </template>
 
 <script setup>
 import mapboxgl from "mapbox-gl";
-import { onMounted, onUnmounted, watch } from "vue";
+import markerIcon from "@/assets/icons/marker-pin.svg";
+import { watch, onUnmounted } from "vue";
 
 const props = defineProps({
   map: Object,
@@ -14,64 +12,80 @@ const props = defineProps({
     type: Array,
     required: true,
   },
-  poiData: Object,
+  poiData: {
+    type: Object,
+    default: () => ({}),
+  },
 });
 
-let marker;
+let marker = null;
 
 watch(
   () => props.map,
   (newMap) => {
-    // Check if newMap is defined and has the expected Mapbox methods (e.g., addControl)
-    if (newMap && typeof newMap.addControl === "function") {
-      const el = document.createElement("div");
-      el.className = "poi-marker";
-      if (marker) marker.remove();
+    // Map must be ready
+    if (!newMap || typeof newMap.addControl !== "function") return;
 
-      el.style.width = "30px";
-      el.style.height = "30px";
-      el.style.backgroundColor = "red"; // Should be unmistakable
-      el.style.borderRadius = "50%";
-      el.style.border = "4px solid yellow";
-      el.style.zIndex = "1000"; // Ensure it's above all map tiles
+    // Coordinates must exist
+    if (!props.coordinates) return;
 
-      marker = new mapboxgl.Marker({ element: el })
-        .setLngLat(coordinates)
-        .addTo(newMap);
+    // Remove old marker if it exists
+    if (marker) marker.remove();
 
-      const poiName = props.poiData.name;
-      const poiDescription = props.poiData.description;
+    // Create DOM element
+    const el = document.createElement("div");
+    el.className = "poi-marker";
+    el.style.backgroundImage = `url("${markerIcon}")`;
 
-      if (poiName) {
-        const popupContent = `
-          <div class="poi-popup">
-            <h3>${poiName}</h3>
-            <p>${poiDescription}</p>
-          </div>
-        `;
+    // Create marker
+    marker = new mapboxgl.Marker({ element: el })
+      .setLngLat(props.coordinates)
+      .addTo(newMap);
 
-        marker.setPopup(
-          new mapboxgl.Popup({ offset: 25 }).setHTML(popupContent)
-        );
-      }
+    // Popup (if provided)
+    if (props.poiData?.name) {
+      const popupContent = `
+        <div>
+          <h3>${props.poiData.name}</h3>
+          <p>${props.poiData.description || ""}</p>
+        </div>
+      `;
+
+      marker.setPopup(
+        new mapboxgl.Popup({
+          offset: 25,
+          className: "poi-popup",
+        }).setHTML(popupContent)
+      );
     }
   },
   { immediate: true }
 );
 onUnmounted(() => {
-  if (marker) {
-    marker.remove();
-  }
+  if (marker) marker.remove();
 });
 </script>
 
-<style scoped>
+<style>
 .poi-marker {
+  width: 32px;
+  height: 32px;
   display: block;
-  width: 20px;
-  height: 20px;
-  background-color: #06bf00;
-  border-radius: 50%;
-  border: 2px solid white;
+  cursor: pointer;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.poi-popup .mapboxgl-popup-content {
+  color: white; /* changes text color */
+  background-color: #2c3e50; /* optional background */
+}
+
+.poi-popup .mapboxgl-popup-content h3 {
+  color: #f1c40f;
+}
+
+.poi-popup .mapboxgl-popup-content p {
+  color: #ecf0f1;
 }
 </style>
