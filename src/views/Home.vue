@@ -1,6 +1,11 @@
 <template>
   <div class="home-container">
-    <div class="search-section">Search</div>
+    <div class="search-section">
+      <router-link to="/add-walk">
+        <button>Add a New Walk</button>
+      </router-link>
+    </div>
+    // Add a button here for adding walk -> route to add-walk/
     <div class="featured-walk-section">
       <FeaturedWalk
         :center="mapCenter"

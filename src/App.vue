@@ -1,5 +1,4 @@
 <script setup>
-import Home from "@/components/Home.vue";
 import Header from "@/components/Header.vue";
 </script>
 
@@ -7,7 +6,7 @@ import Header from "@/components/Header.vue";
   <Header />
 
   <main>
-    <Home />
+    <router-view />
   </main>
 </template>
 
