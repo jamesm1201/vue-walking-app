@@ -3,9 +3,11 @@ import Header from "@/components/Header.vue";
 </script>
 
 <template>
-  <Header />
+  <header class="header-section">
+    <Header />
+  </header>
 
-  <main>
+  <main class="page">
     <router-view />
   </main>
 </template>
@@ -17,6 +19,20 @@ import Header from "@/components/Header.vue";
   display: flex;
   flex-direction: column;
   width: 100vh;
+}
+.header.header-section {
+  width: 100%;
+  height: 60px; /* Fixed height for header */
+  position: fixed;
+  top: 0;
+}
+.page {
+  margin-top: 60px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  overflow: hidden;
 }
 
 main {

@@ -5,7 +5,6 @@
         <button>Add a New Walk</button>
       </router-link>
     </div>
-    // Add a button here for adding walk -> route to add-walk/
     <div class="featured-walk-section">
       <FeaturedWalk
         :center="mapCenter"
