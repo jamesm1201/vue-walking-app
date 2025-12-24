@@ -34,12 +34,4 @@ import Header from "@/components/Header.vue";
   height: auto;
   overflow: hidden;
 }
-
-main {
-  flex-grow: 1; /* Allows 'main' to take up all remaining vertical space */
-  display: flex; /* Apply flex to 'main' to manage its content (Home) */
-  flex-direction: column;
-  height: auto; /* Since flex-grow is set, height can be auto */
-  overflow: hidden; /* Prevent main from overflowing if Home content is too large */
-}
 </style>

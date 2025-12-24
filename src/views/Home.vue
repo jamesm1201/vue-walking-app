@@ -2,7 +2,7 @@
   <div class="home-container">
     <div class="search-section">
       <router-link to="/add-walk">
-        <button>Add a New Walk</button>
+        <button class="add-walk-button">Add a New Walk</button>
       </router-link>
     </div>
     <div class="featured-walk-section">
@@ -58,5 +58,15 @@ const mapCenter = computed(() => {
   width: 100%;
   margin-top: 20px;
   height: 50vh;
+}
+.add-walk-button {
+  background-color: #2919ff;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 </style>

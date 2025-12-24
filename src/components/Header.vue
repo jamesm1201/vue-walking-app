@@ -10,7 +10,11 @@
 
     <div class="right">
       <!-- optional action buttons / icons can be passed via slot -->
-      <slot name="actions"></slot>
+      <slot name="actions">
+        <router-link to="/">
+          <button class="home-button">Home</button>
+        </router-link>
+      </slot>
     </div>
   </header>
 </template>
@@ -64,5 +68,13 @@ const props = defineProps({
   display: flex;
   align-items: center;
   gap: 8px;
+}
+.home-button {
+  background-color: #f7f7f7;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
 }
 </style>
