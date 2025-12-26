@@ -96,6 +96,19 @@ onMounted(() => {
   });
   map.value.on("load", () => {
     addWalkPath();
+    map.value.addControl(
+      new mapboxgl.NavigationControl({
+        showCompass: true,
+        showZoom: true,
+        visualizePitch: true,
+      }),
+      "top-right"
+    );
+    // Add scale control
+    map.value.addControl(
+      new mapboxgl.ScaleControl({ maxWidth: 100, unit: "metric" }),
+      "bottom-left"
+    );
   });
 });
 watch(
