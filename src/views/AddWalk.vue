@@ -1,6 +1,6 @@
 <template>
   <div class="controls">
-    <button @click="toggleDrawing">
+    <button @click="toggleDrawing" :disabled="walkPath !== null && !isDrawing">
       {{ isDrawing ? "Stop Drawing" : "Start Drawing" }}
     </button>
   </div>
@@ -74,6 +74,11 @@ onUnmounted(() => {
 });
 
 function toggleDrawing() {
+  // Prevent starting a new drawing if one already exists
+  if (walkPath.value && !isDrawing.value) {
+    console.log("A walk path already exists. Delete it first.");
+    return;
+  }
   isDrawing.value = !isDrawing.value;
 
   if (isDrawing.value) {
@@ -98,5 +103,24 @@ function toggleDrawing() {
 .map {
   width: 100%;
   height: 100%;
+}
+.controls {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+}
+.controls button {
+  background-color: #2919ff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.controls button:disabled {
+  background-color: #888;
+  cursor: not-allowed;
 }
 </style>
