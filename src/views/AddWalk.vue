@@ -1,4 +1,9 @@
 <template>
+  <div class="controls">
+    <button @click="toggleDrawing">
+      {{ isDrawing ? "Stop Drawing" : "Start Drawing" }}
+    </button>
+  </div>
   <div class="map-container">
     <div ref="mapContainer" class="map"></div>
   </div>
@@ -8,9 +13,14 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import MapboxDraw from "@mapbox/mapbox-gl-draw";
+import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 
 const mapContainer = ref(null);
 const map = ref(null);
+const isDrawing = ref(false);
+const draw = ref(null);
+const walkPath = ref(null); // stores the line data
 mapboxgl.accessToken =
   "pk.eyJ1IjoiamFtZXNtMTIwMSIsImEiOiJjbTM1empmbHowMDN3MmxxcTFhd2V6ZnUwIn0.371lKfhPVCbb9V-ZKG4MwA";
 
@@ -27,13 +37,25 @@ onMounted(() => {
 
     map.value.on("load", () => {
       // Add navigation controls to the map (zoom and rotation)
+      draw.value = new MapboxDraw({
+        displayControlsDefault: false,
+        controls: {
+          trash: true,
+          //line_string: true,
+          point: true,
+        },
+        defaultMode: "simple_select",
+      });
+
+      // Add Draw control to the map
+      map.value.addControl(draw.value, "top-left");
       map.value.addControl(
         new mapboxgl.NavigationControl({
           showCompass: true,
           showZoom: true,
           visualizePitch: true,
         }),
-        "top-left"
+        "bottom-right"
       );
       // Add scale control
       map.value.addControl(
@@ -50,6 +72,21 @@ onMounted(() => {
 onUnmounted(() => {
   if (map.value) map.value.remove();
 });
+
+function toggleDrawing() {
+  isDrawing.value = !isDrawing.value;
+
+  if (isDrawing.value) {
+    draw.value.changeMode("draw_line_string");
+  } else {
+    // Get the data
+    const data = draw.value.getAll();
+    if (data.features.length > 0) {
+      walkPath.value = data.features[0];
+    }
+    draw.value.changeMode("simple_select");
+  }
+}
 </script>
 
 <style scoped>
@@ -61,8 +98,5 @@ onUnmounted(() => {
 .map {
   width: 100%;
   height: 100%;
-}
-:deep(.mapboxgl-ctrl-top-right) {
-  z-index: 1000;
 }
 </style>
