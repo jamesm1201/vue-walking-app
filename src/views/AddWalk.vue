@@ -21,7 +21,7 @@ onMounted(() => {
       style: "mapbox://styles/mapbox/outdoors-v12",
       center: [-1.28414, 51.3828],
       zoom: 12,
-      pitch: 45,
+      pitch: 35,
       bearing: 0,
     });
 
@@ -33,7 +33,7 @@ onMounted(() => {
           showZoom: true,
           visualizePitch: true,
         }),
-        "top-right"
+        "top-left"
       );
       // Add scale control
       map.value.addControl(
@@ -45,22 +45,6 @@ onMounted(() => {
     console.error("Error initializing Mapbox map:", error);
   }
 });
-
-// Add navigation controls to the map (zoom and rotation)
-map.value.addControl(
-  new mapboxgl.NavigationControl({
-    showCompass: true,
-    showZoom: true,
-    visualizePitch: true,
-  }),
-  "top-right"
-);
-
-// Add scale control
-map.value.addControl(
-  new mapboxgl.ScaleControl({ maxWidth: 100, unit: "metric" }),
-  "bottom-left"
-);
 
 // Clean up on unmount
 onUnmounted(() => {
@@ -77,5 +61,8 @@ onUnmounted(() => {
 .map {
   width: 100%;
   height: 100%;
+}
+:deep(.mapboxgl-ctrl-top-right) {
+  z-index: 1000;
 }
 </style>
