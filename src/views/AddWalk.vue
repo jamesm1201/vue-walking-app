@@ -23,14 +23,37 @@
     </div>
     <div v-if="showPOIForm" class="form-modal">
       <form @submit.prevent="handleSubmit">
-        <input v-model="formData.name" />
-        <textarea v-model="formData.description"></textarea>
-        <select v-model="formData.type">
-          <option value="cafe">Cafe</option>
-          <option value="viewpoint">Viewpoint</option>
-        </select>
-        <button type="submit">Save</button>
-        <button type="button" @click="showPOIForm = false">Cancel</button>
+        <h2 class="form-group">Add Point of Interest</h2>
+        <div class="form-group">
+          <label for="poi-name">Name</label>
+          <input id="poi-name" v-model="formData.name" type="text" required />
+        </div>
+
+        <div class="form-group">
+          <label for="poi-description">Description</label>
+          <textarea
+            id="poi-description"
+            v-model="formData.description"
+            rows="3"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="poi-type">Type</label>
+          <select id="poi-type" v-model="formData.type" required>
+            <!-- Initial value cannot see after another is selected-->
+            <option value="" hidden>Select type...</option>
+            <option value="cafe">Cafe</option>
+            <option value="viewpoint">Viewpoint</option>
+            <option value="parking">Parking</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-buttons">
+          <button type="submit">Save</button>
+          <button type="button" @click="showPOIForm = false">Cancel</button>
+        </div>
       </form>
     </div>
   </div>
@@ -221,7 +244,7 @@ function deleteWalkPath() {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(104, 38, 228, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -230,9 +253,58 @@ function deleteWalkPath() {
 
 .form-modal form {
   background: white;
-  padding: 20px;
+  padding: 30px;
   border-radius: 8px;
   max-width: 400px;
   width: 90%;
+}
+
+.form-modal h2 {
+  margin: 0 0 20px 0;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  color: #5f2fcf;
+}
+
+.form-group label {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.form-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.form-buttons button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.form-buttons button[type="submit"] {
+  background: #5f2fcf;
+  color: white;
+}
+
+.form-buttons button[type="button"] {
+  background: #ccc;
 }
 </style>
