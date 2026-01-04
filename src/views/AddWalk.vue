@@ -3,6 +3,9 @@
     <button @click="toggleDrawing" :disabled="walkPath !== null && !isDrawing">
       {{ isDrawing ? "Stop Drawing" : "Start Drawing" }}
     </button>
+    <button @click="deleteWalkPath" :disabled="walkPath === null">
+      Delete Walk
+    </button>
   </div>
   <div class="map-container">
     <div ref="mapContainer" class="map"></div>
@@ -19,8 +22,8 @@ import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 const mapContainer = ref(null);
 const map = ref(null);
 const isDrawing = ref(false);
-const draw = ref(null);
-const walkPath = ref(null); // stores the line data
+const draw = ref(null); // Mapbox Draw instance
+const walkPath = ref(null); // Stores the line data
 mapboxgl.accessToken =
   "pk.eyJ1IjoiamFtZXNtMTIwMSIsImEiOiJjbTM1empmbHowMDN3MmxxcTFhd2V6ZnUwIn0.371lKfhPVCbb9V-ZKG4MwA";
 
@@ -29,7 +32,7 @@ onMounted(() => {
     map.value = new mapboxgl.Map({
       container: mapContainer.value,
       style: "mapbox://styles/mapbox/outdoors-v12",
-      center: [-1.28414, 51.3828],
+      center: [-1.28414, 51.3828],    
       zoom: 12,
       pitch: 35,
       bearing: 0,
@@ -40,9 +43,9 @@ onMounted(() => {
       draw.value = new MapboxDraw({
         displayControlsDefault: false,
         controls: {
-          trash: true,
+          //trash: true,
           //line_string: true,
-          point: true,
+          //point: true,
         },
         defaultMode: "simple_select",
       });
@@ -90,6 +93,15 @@ function toggleDrawing() {
       walkPath.value = data.features[0];
     }
     draw.value.changeMode("simple_select");
+  }
+}
+
+function deleteWalkPath() {
+  if (walkPath.value) {
+    // draw.value.delete(walkPath.value.id);
+    draw.value.deleteAll(); // Delete all features in Mapbox Draw instance
+    walkPath.value = null;  // Clear line data
+    isDrawing.value = false;
   }
 }
 </script>
