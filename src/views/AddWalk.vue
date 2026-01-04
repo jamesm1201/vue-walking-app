@@ -6,6 +6,9 @@
     <button @click="deleteWalkPath" :disabled="walkPath === null">
       Delete Walk
     </button>
+    <button @click="togglePOIMode" :disabled="isDrawing">
+      {{ isPlacingPOI ? "Cancel POI" : "Add POI" }}
+    </button>
   </div>
   <div class="map-container">
     <div ref="mapContainer" class="map"></div>
@@ -24,6 +27,8 @@ const map = ref(null);
 const isDrawing = ref(false);
 const draw = ref(null); // Mapbox Draw instance
 const walkPath = ref(null); // Stores the line data
+const isPlacingPOI = ref(false);
+const pois = ref([]); // Array to store POI data
 mapboxgl.accessToken =
   "pk.eyJ1IjoiamFtZXNtMTIwMSIsImEiOiJjbTM1empmbHowMDN3MmxxcTFhd2V6ZnUwIn0.371lKfhPVCbb9V-ZKG4MwA";
 
@@ -96,12 +101,53 @@ function toggleDrawing() {
   }
 }
 
+function togglePOIMode() {
+  isPlacingPOI.value = !isPlacingPOI.value;
+  // Not using mapbox draw for POI placement, so handle manually
+  if (isPlacingPOI.value) {
+    // Enable POI placement mode
+     // Targets map instance, gets html <canvas> element and changes cursor style
+    map.value.getCanvas().style.cursor = 'crosshair';
+    // .on() is Mapbox library for map specific events
+    // JS version is addEventListener
+    map.value.on('click', handleMapClickForPOI);
+  } else {
+    // Disable POI placement mode
+    map.value.getCanvas().style.cursor = '';
+    map.value.off('click', handleMapClickForPOI);
+  }
+}
+
+function handleMapClickForPOI(e) {
+  const coordinates = [e.lngLat.lng, e.lngLat.lat];
+  console.log('POI placed at:', coordinates);
+  
+  // TODO: Show form here with coordinates
+  // For now, just add a temporary marker
+  const marker = new mapboxgl.Marker()
+    .setLngLat(coordinates)
+    .addTo(map.value);
+  
+  pois.value.push({
+    coordinates,
+    marker,
+    // Add form data here later
+  });
+  
+  // Exit POI mode after placing
+  togglePOIMode();
+}
+
 function deleteWalkPath() {
   if (walkPath.value) {
     // draw.value.delete(walkPath.value.id);
     draw.value.deleteAll(); // Delete all features in Mapbox Draw instance
     walkPath.value = null;  // Clear line data
     isDrawing.value = false;
+
+    // Delete POIs when deleting walk path?
+    //pois.value.forEach(poi => poi.marker.remove());
+    //pois.value = [];
   }
 }
 </script>
