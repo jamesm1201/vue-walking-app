@@ -11,7 +11,28 @@
     </button>
   </div>
   <div class="map-container">
-    <div ref="mapContainer" class="map"></div>
+    <div ref="mapContainer" class="map">
+      <!-- Render POI components -->
+      <POIMarker
+        v-for="poi in pois"
+        :key="poi.id"
+        :map="map"
+        :coordinates="poi.coordinates"
+        :poi-data="poi"
+      />
+    </div>
+    <div v-if="showPOIForm" class="form-modal">
+      <form @submit.prevent="handleSubmit">
+        <input v-model="formData.name" />
+        <textarea v-model="formData.description"></textarea>
+        <select v-model="formData.type">
+          <option value="cafe">Cafe</option>
+          <option value="viewpoint">Viewpoint</option>
+        </select>
+        <button type="submit">Save</button>
+        <button type="button" @click="showPOIForm = false">Cancel</button>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -21,6 +42,7 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
+import POIMarker from "@/components/PoiMarker.vue";
 
 const mapContainer = ref(null);
 const map = ref(null);
@@ -29,6 +51,14 @@ const draw = ref(null); // Mapbox Draw instance
 const walkPath = ref(null); // Stores the line data
 const isPlacingPOI = ref(false);
 const pois = ref([]); // Array to store POI data
+const showPOIForm = ref(false); // Control POI form visibility
+const formData = ref({
+  name: "",
+  description: "",
+  type: "",
+});
+const currentPOICoordinates = ref(null); // Store coordinates temporarily
+
 mapboxgl.accessToken =
   "pk.eyJ1IjoiamFtZXNtMTIwMSIsImEiOiJjbTM1empmbHowMDN3MmxxcTFhd2V6ZnUwIn0.371lKfhPVCbb9V-ZKG4MwA";
 
@@ -37,7 +67,7 @@ onMounted(() => {
     map.value = new mapboxgl.Map({
       container: mapContainer.value,
       style: "mapbox://styles/mapbox/outdoors-v12",
-      center: [-1.28414, 51.3828],    
+      center: [-1.28414, 51.3828],
       zoom: 12,
       pitch: 35,
       bearing: 0,
@@ -48,6 +78,7 @@ onMounted(() => {
       draw.value = new MapboxDraw({
         displayControlsDefault: false,
         controls: {
+          // Made own buttons for these
           //trash: true,
           //line_string: true,
           //point: true,
@@ -106,34 +137,37 @@ function togglePOIMode() {
   // Not using mapbox draw for POI placement, so handle manually
   if (isPlacingPOI.value) {
     // Enable POI placement mode
-     // Targets map instance, gets html <canvas> element and changes cursor style
-    map.value.getCanvas().style.cursor = 'crosshair';
+    // Targets map instance, gets html <canvas> element and changes cursor style
+    map.value.getCanvas().style.cursor = "crosshair";
     // .on() is Mapbox library for map specific events
     // JS version is addEventListener
-    map.value.on('click', handleMapClickForPOI);
+    map.value.on("click", handleMapClickForPOI);
   } else {
     // Disable POI placement mode
-    map.value.getCanvas().style.cursor = '';
-    map.value.off('click', handleMapClickForPOI);
+    map.value.getCanvas().style.cursor = "";
+    map.value.off("click", handleMapClickForPOI);
   }
 }
 
-function handleMapClickForPOI(e) {
-  const coordinates = [e.lngLat.lng, e.lngLat.lat];
-  console.log('POI placed at:', coordinates);
-  
-  // TODO: Show form here with coordinates
-  // For now, just add a temporary marker
-  const marker = new mapboxgl.Marker()
-    .setLngLat(coordinates)
-    .addTo(map.value);
-  
+function handleSubmit() {
+  // Add POI with form data
   pois.value.push({
-    coordinates,
-    marker,
-    // Add form data here later
+    // Adds ID and coordinates needed for POIMarker.vue
+    id: Date.now(),
+    coordinates: currentPOICoordinates.value,
+    //Spreads formData fields into the new object for the Popup
+    ...formData.value,
   });
-  
+
+  // Reset form and close
+  formData.value = { name: "", description: "", type: "" };
+  showPOIForm.value = false;
+}
+
+function handleMapClickForPOI(e) {
+  // When point clicked on map, store coordinates and give to form
+  currentPOICoordinates.value = [e.lngLat.lng, e.lngLat.lat];
+  showPOIForm.value = true;
   // Exit POI mode after placing
   togglePOIMode();
 }
@@ -142,7 +176,7 @@ function deleteWalkPath() {
   if (walkPath.value) {
     // draw.value.delete(walkPath.value.id);
     draw.value.deleteAll(); // Delete all features in Mapbox Draw instance
-    walkPath.value = null;  // Clear line data
+    walkPath.value = null; // Clear line data
     isDrawing.value = false;
 
     // Delete POIs when deleting walk path?
@@ -180,5 +214,25 @@ function deleteWalkPath() {
 .controls button:disabled {
   background-color: #888;
   cursor: not-allowed;
+}
+.form-modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.form-modal form {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 400px;
+  width: 90%;
 }
 </style>
