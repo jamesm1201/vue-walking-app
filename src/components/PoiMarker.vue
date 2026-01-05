@@ -1,10 +1,19 @@
-<template>
-</template>
+<template></template>
 
 <script setup>
 import mapboxgl from "mapbox-gl";
 import markerIcon from "@/assets/icons/marker-pin.svg";
+import cafeIcon from "@/assets/icons/cafe-pin.svg";
+import viewpointIcon from "@/assets/icons/view-pin.svg";
+import parkingIcon from "@/assets/icons/parking-pin.svg";
 import { watch, onUnmounted } from "vue";
+
+const iconMap = {
+  cafe: cafeIcon,
+  viewpoint: viewpointIcon,
+  parking: parkingIcon,
+  other: markerIcon, // your default marker
+};
 
 const props = defineProps({
   map: Object,
@@ -14,10 +23,13 @@ const props = defineProps({
   },
   poiData: {
     type: Object,
-    default: () => ({}),
+    default: () => ({type: "other"}),
   },
 });
 
+const icon = props.poiData?.type 
+  ? (iconMap[props.poiData.type] || markerIcon)
+  : markerIcon;
 let marker = null;
 
 watch(
@@ -35,7 +47,8 @@ watch(
     // Create DOM element
     const el = document.createElement("div");
     el.className = "poi-marker";
-    el.style.backgroundImage = `url("${markerIcon}")`;
+    // Set differently depending on type
+    el.style.backgroundImage = `url("${icon}")`;
 
     // Create marker
     marker = new mapboxgl.Marker({ element: el })
