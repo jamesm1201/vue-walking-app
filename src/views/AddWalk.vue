@@ -26,21 +26,21 @@
         <h2 class="form-group">Add Point of Interest</h2>
         <div class="form-group">
           <label for="poi-name">Name</label>
-          <input id="poi-name" v-model="formData.name" type="text" required />
+          <input id="poi-name" v-model="poiFormData.name" type="text" required />
         </div>
 
         <div class="form-group">
           <label for="poi-description">Description</label>
           <textarea
             id="poi-description"
-            v-model="formData.description"
+            v-model="poiFormData.description"
             rows="3"
           ></textarea>
         </div>
 
         <div class="form-group">
           <label for="poi-type">Type</label>
-          <select id="poi-type" v-model="formData.type" required>
+          <select id="poi-type" v-model="poiFormData.type" required>
             <!-- Initial value cannot see after another is selected-->
             <option value="" hidden>Select type...</option>
             <option value="cafe">Cafe</option>
@@ -49,7 +49,6 @@
             <option value="other">Other</option>
           </select>
         </div>
-
         <div class="form-buttons">
           <button type="submit">Save</button>
           <button type="button" @click="showPOIForm = false">Cancel</button>
@@ -57,15 +56,17 @@
       </form>
     </div>
   </div>
+  <AddWalkForm @save="handleSaveWalk"/>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, computed } from "vue";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 import POIMarker from "@/components/PoiMarker.vue";
+import AddWalkForm from "@/components/addWalkForm.vue";
 
 const mapContainer = ref(null);
 const map = ref(null);
@@ -75,7 +76,7 @@ const walkPath = ref(null); // Stores the line data
 const isPlacingPOI = ref(false);
 const pois = ref([]); // Array to store POI data
 const showPOIForm = ref(false); // Control POI form visibility
-const formData = ref({
+const poiFormData = ref({
   name: "",
   description: "",
   type: "",
@@ -136,7 +137,6 @@ onUnmounted(() => {
 });
 
 function toggleDrawing() {
-  // Prevent starting a new drawing if one already exists
   if (walkPath.value && !isDrawing.value) {
     console.log("A walk path already exists. Delete it first.");
     return;
@@ -146,7 +146,6 @@ function toggleDrawing() {
   if (isDrawing.value) {
     draw.value.changeMode("draw_line_string");
   } else {
-    // Get the data
     const data = draw.value.getAll();
     if (data.features.length > 0) {
       walkPath.value = data.features[0];
@@ -179,11 +178,11 @@ function handleSubmit() {
     id: Date.now(),
     coordinates: currentPOICoordinates.value,
     //Spreads formData fields into the new object for the Popup
-    ...formData.value,
+    ...poiFormData.value,
   });
 
   // Reset form and close
-  formData.value = { name: "", description: "", type: "" };
+  poiFormData.value = { name: "", description: "", type: "" };
   showPOIForm.value = false;
 }
 
@@ -206,6 +205,12 @@ function deleteWalkPath() {
     //pois.value.forEach(poi => poi.marker.remove());
     //pois.value = [];
   }
+}
+
+function handleSaveWalk(walkData) {
+  console.log("Walk data received from form:", walkData);
+  // Combine form data in walk with POIs and walkPath
+  // Then can send to API or store locally
 }
 </script>
 
