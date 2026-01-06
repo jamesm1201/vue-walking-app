@@ -71,6 +71,9 @@
 
 <script setup>
 import { ref, computed } from "vue";
+const { walkPath } = defineProps({
+  walkPath: Object
+});
 const walkDetailsFormData = ref({
   name: "",
   difficulty: "",

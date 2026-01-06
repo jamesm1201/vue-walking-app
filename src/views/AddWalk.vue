@@ -56,7 +56,7 @@
       </form>
     </div>
   </div>
-  <AddWalkForm @save="handleSaveWalk"/>
+  <AddWalkForm :walk-path="walkPath" @save="handleSaveWalk"/>
 </template>
 
 <script setup>
@@ -66,7 +66,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 import POIMarker from "@/components/PoiMarker.vue";
-import AddWalkForm from "@/components/addWalkForm.vue";
+import AddWalkForm from "@/components/AddWalkForm.vue";
 
 const mapContainer = ref(null);
 const map = ref(null);
